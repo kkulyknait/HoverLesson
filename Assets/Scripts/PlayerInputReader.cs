@@ -7,7 +7,7 @@ public class PlayerInputReader : ScriptableObject
 {
     public event Action InteractEvent;
     public Vector2 MoveInput { get; private set; }
-    public Vector2 LookInput { get; private set; }
+    public Vector2 LookInput => _controls.Player.Look.ReadValue<Vector2>();
 
     private InputSystem_Actions _controls;
 
@@ -15,12 +15,10 @@ public class PlayerInputReader : ScriptableObject
     {
         if (_controls == null)
         {
-            _controls = new InputSystem_Actions(); 
+            _controls = new InputSystem_Actions();
         }
         _controls.Player.Move.performed += HandleMove;
         _controls.Player.Move.canceled += HandleMove;
-        _controls.Player.Look.performed += HandleLook;
-        _controls.Player.Look.canceled += HandleLook;
         _controls.Player.Interact.performed += HandleInteract;
         _controls.Player.Enable();
     }
@@ -29,8 +27,6 @@ public class PlayerInputReader : ScriptableObject
     {
         _controls.Player.Move.performed -= HandleMove;
         _controls.Player.Move.canceled -= HandleMove;
-        _controls.Player.Look.performed -= HandleLook;
-        _controls.Player.Look.canceled -= HandleLook;
         _controls.Player.Interact.performed -= HandleInteract;
         _controls.Player.Disable();
     }
@@ -39,13 +35,9 @@ public class PlayerInputReader : ScriptableObject
     {
         MoveInput = context.ReadValue<Vector2>();
     }
-    private void HandleLook(InputAction.CallbackContext context)
-    {
-        LookInput = context.ReadValue<Vector2>();
-    }
+
     private void HandleInteract(InputAction.CallbackContext context)
     {
         InteractEvent?.Invoke();
     }
-
 }
