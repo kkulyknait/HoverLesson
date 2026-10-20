@@ -21,10 +21,11 @@ public class PlayerInteraction : MonoBehaviour
     {
         if(Physics.Raycast(rayOrigin.position, rayOrigin.forward, out RaycastHit hit, interactRange))
         {
-            Debug.Log("Interact hit" + hit.collider.name);
-            if (hit.collider.CompareTag("SecurityConsole"))
+            if (hit.collider.TryGetComponent(out IInteractable interactable))
             {
-                stateController.TransitionToState(new ConsoleState(stateController));
+                Debug.DrawRay(rayOrigin.position, rayOrigin.forward * interactRange, Color.red, 1f);
+                Debug.Log($"Ray hit {hit.collider.name}");
+                interactable.Interact(stateController);
             }
         }
 
